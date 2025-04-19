@@ -19,13 +19,13 @@ package com.assertiveui.kit.core.theme.shape
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import sv.lib.squircleshape.CornerSmoothing
-import sv.lib.squircleshape.SquircleShape
+import com.assertiveui.kit.core.theme.shape.squircle.CornerSmoothing
+import com.assertiveui.kit.core.theme.shape.squircle.SquircleShape
 
 internal object DefaultShapeTokens : ShapeTokens {
-    override val largeShape: Shape get() = SquircleShape(48.dp, CornerSmoothing.Small)
-    override val mediumShape: Shape get() = SquircleShape(24.dp, CornerSmoothing.Small)
-    override val smallShape: Shape get() = SquircleShape(16.dp, CornerSmoothing.Small)
+    override val largeShape: Shape get() = SquircleShape(48.dp, CornerSmoothing.Medium)
+    override val mediumShape: Shape get() = SquircleShape(24.dp, CornerSmoothing.Medium)
+    override val smallShape: Shape get() = SquircleShape(16.dp, CornerSmoothing.Medium)
 }
 
 @Immutable

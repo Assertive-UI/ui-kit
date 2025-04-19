@@ -62,7 +62,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.colorMath)
             implementation(libs.colorMath.compose)
-            implementation(libs.squircleShape)
         }
 
     }
