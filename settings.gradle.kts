@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-rootProject.name = "AssertiveUIKitLite"
+rootProject.name = "AssertiveUIKit"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 @Suppress("UnstableApiUsage")

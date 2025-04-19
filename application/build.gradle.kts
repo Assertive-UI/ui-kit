@@ -15,7 +15,6 @@
  */
 
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
@@ -31,12 +30,12 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "assertiveUIKitLiteApp"
+        outputModuleName = "assertiveUIKitApp"
         browser {
             val rootDirPath = project.rootDir.path
             val projectDirPath = project.projectDir.path
             commonWebpackConfig {
-                outputFileName = "assertiveUIKitLiteApp.js"
+                outputFileName = "assertiveUIKitApp.js"
                 devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
                     static = (static ?: mutableListOf()).apply {
                         // Serve sources to debug inside browser
@@ -50,7 +49,6 @@ kotlin {
     }
 
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -87,7 +85,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.colorMath)
             implementation(libs.colorMath.compose)
-           // implementation(libs.squircleShape)
+            // implementation(libs.squircleShape)
         }
 
     }
@@ -96,11 +94,11 @@ kotlin {
 
 android {
 
-    namespace = "com.assertiveui.kit.lite.app"
+    namespace = "com.assertiveui.kit.app"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.assertiveui.kit.lite.app"
+        applicationId = "com.assertiveui.kit.app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -138,11 +136,11 @@ compose.desktop {
 
     application {
 
-        mainClass = "com.assertiveui.kit.lite.app.MainKt"
+        mainClass = "com.assertiveui.kit.app.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.assertiveui.kit.lite.app"
+            packageName = "com.assertiveui.kit.app"
             packageVersion = "1.0.0"
         }
 
