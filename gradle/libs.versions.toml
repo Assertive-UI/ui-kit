@@ -17,7 +17,6 @@ junit = "4.13.2"
 kotlin = "2.1.20"
 kotlinx-coroutines = "1.9.0"
 colorMathVersion = "3.6.0"
-squircleShape = "4.0.0-beta01"
 systemUiBarsTweaker = "v1.2.3"
 runner = "1.0.2"
 espressoCore = "3.0.2"
@@ -46,7 +45,6 @@ colorMath-compose = { group = "com.github.ajalt.colormath", name = "colormath-ex
 runner = { group = "com.android.support.test", name = "runner", version.ref = "runner" }
 espresso-core = { group = "com.android.support.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat-v7 = { group = "com.android.support", name = "appcompat-v7", version.ref = "appcompatV7" }
-squircleShape = { group = "io.github.stoyan-vuchev", name = "squircle-shape", version.ref = "squircleShape" }
 systemUiBarsTweaker = { group = "com.github.stoyan-vuchev", name = "system-ui-bars-tweaker", version.ref = "systemUiBarsTweaker" }
 
 # =================================================================================================
