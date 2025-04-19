@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -31,7 +30,6 @@ kotlin {
     wasmJs { browser() }
 
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
@@ -73,7 +71,7 @@ kotlin {
 
 android {
 
-    namespace = "com.assertiveui.kit.lite"
+    namespace = "com.assertiveui.kit"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
