@@ -27,7 +27,7 @@ package com.assertiveui.kit.core.utils
  *
  * @return The transformed value.
  */
-internal fun transformFraction(
+fun transformFraction(
     value: Float,
     startX: Float = 0f,
     endX: Float = 1f,
@@ -46,4 +46,24 @@ internal fun transformFraction(
     // Transform the value to the new range
     return ((value - newStartX) / (newEndX - newStartX)) * (newEndY - newStartY) + newStartY
 
+}
+
+/**
+ * Computes a triangular wave function for a given fraction value.
+ *
+ * This function smoothly interpolates the value between `1f` and `0f` based on the input fraction:
+ * - Starts at `1f` when `fraction = 0f`
+ * - Decreases linearly to `0f` when `fraction = 0.5f`
+ * - Increases back to `1f` when `fraction = 1f`
+ *
+ * Mathematically, it follows the equation:
+ * ```
+ * f(x) = 1 - 2 * |x - 0.5|
+ * ```
+ *
+ * @param fraction A floating-point value in the range `[0f, 1f]`, representing the input fraction.
+ * @return A floating-point value in the range `[0f, 1f]`, following a triangular wave pattern.
+ */
+fun triangleFraction(value: Float): Float {
+    return 1f - 2f * kotlin.math.abs(value - 0.5f)
 }

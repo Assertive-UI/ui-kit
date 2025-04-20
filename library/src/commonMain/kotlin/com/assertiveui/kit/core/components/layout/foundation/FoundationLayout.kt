@@ -17,6 +17,7 @@
 package com.assertiveui.kit.core.components.layout.foundation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,11 +34,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.UiComposable
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
+import com.assertiveui.kit.core.components.topbar.CollapsingTopBar
 import com.assertiveui.kit.core.theme.Theme
 import com.assertiveui.kit.core.theme.color.palette.LocalContentColor
 import com.assertiveui.kit.core.utils.LocalWindowState
@@ -50,7 +59,7 @@ import com.assertiveui.kit.core.utils.LocalWindowState
  * by making an assertion based on the provided local context.
  *
  * @param modifier a [Modifier] to be applied to the scaffold
- * @param topBar a top app bar component, typically a [TopBar]
+ * @param topBar a top app bar component, typically a [CollapsingTopBar]
  * @param bottomBar a bottom bar component, typically a [NavigationBar]
  * @param sideRail a side rail component, typically a [NavigationRail]
  * @param snackbarHost a component to host [Snackbar]s that are pushed to be shown via
@@ -73,14 +82,14 @@ import com.assertiveui.kit.core.utils.LocalWindowState
 @Composable
 fun FoundationLayout(
     modifier: Modifier = Modifier,
-    topBar: @Composable () -> Unit = {},
-    bottomBar: @Composable () -> Unit = {},
-    sideRail: @Composable () -> Unit = {},
-    snackbarHost: @Composable () -> Unit = {},
+    topBar: @Composable @UiComposable (() -> Unit)? = null,
+    bottomBar: @Composable @UiComposable (() -> Unit)? = null,
+    sideRail: @Composable @UiComposable () -> Unit = {},
+    snackbarHost: @Composable @UiComposable () -> Unit = {},
     containerColor: Color = Theme.colorPalette.surfaceElevationLow,
     contentColor: Color = Theme.colorPalette.onSurfaceElevationLow,
     contentWindowInsets: WindowInsets = WindowInsets.systemBars,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable @UiComposable (PaddingValues) -> Unit
 ) = BoxWithConstraints(
     modifier = Modifier
         .background(containerColor)
@@ -110,8 +119,8 @@ fun FoundationLayout(
 
 @Composable
 private fun FoundationLayoutImpl(
-    topBar: @Composable () -> Unit,
-    bottomBar: @Composable () -> Unit,
+    topBar: @Composable (() -> Unit)?,
+    bottomBar: @Composable (() -> Unit)?,
     sideRail: @Composable () -> Unit,
     snackbar: @Composable () -> Unit,
     content: @Composable (PaddingValues) -> Unit,
@@ -139,7 +148,7 @@ private fun FoundationLayoutImpl(
         // Defining top bar placeables & height.
         val topBarPlaceables = subcompose(
             slotId = ResponsiveScaffoldLayoutContent.TopBar,
-            content = topBar
+            content = topBar ?: {}
         ).map {
 
             val leftInset = if (
@@ -197,24 +206,25 @@ private fun FoundationLayoutImpl(
         // Defining bottom bar placeables & height.
         val bottomBarPlaceables = subcompose(
             slotId = ResponsiveScaffoldLayoutContent.BottomBar,
-            content = bottomBar
+            content = bottomBar ?: {}
         ).map { it.measure(looseConstraints) }
-        val bottomBarHeight = bottomBarPlaceables.maxByOrNull { it.height }?.height
+        val bottomBarHeight = bottomBarPlaceables.maxByOrNull { it.height }?.height ?: 0
 
         // Snackbar bottom offset.
         val snackbarOffsetFromBottom = if (snackbarHeight != 0) {
-            snackbarHeight +
-                    (bottomBarHeight
-                        ?: contentWindowInsets.getBottom(this@SubcomposeLayout))
+            snackbarHeight + bottomBarHeight
         } else 0
 
         // Defining body content placeables.
-        val bodyContentPlaceables = subcompose(ResponsiveScaffoldLayoutContent.MainContent) {
+        val bodyContentPlaceables = subcompose(
+            ResponsiveScaffoldLayoutContent.MainContent
+        ) {
+
             val insets = contentWindowInsets.asPaddingValues(this@SubcomposeLayout)
             val innerPadding = PaddingValues(
                 top = if (topBarPlaceables.isEmpty()) insets.calculateTopPadding()
                 else topBarHeight.toDp(),
-                bottom = if (bottomBarPlaceables.isEmpty() || bottomBarHeight == null) {
+                bottom = if (bottomBarPlaceables.isEmpty()) {
                     insets.calculateBottomPadding()
                 } else bottomBarHeight.toDp(),
                 start = if (sideRailPlaceables.isEmpty() || sideRailWidth == null) {
@@ -222,7 +232,59 @@ private fun FoundationLayoutImpl(
                 } else sideRailWidth.toDp(),
                 end = insets.calculateEndPadding((this@SubcomposeLayout).layoutDirection)
             )
-            content(innerPadding)
+
+            Box(
+                modifier = Modifier
+                    .graphicsLayer { this.alpha = .99f }
+                    .fillMaxSize()
+                    .drawWithContent {
+
+                        // Draw the body content.
+                        drawContent()
+
+                        // Apply fading edge for the top bar.
+                        if (topBar != null) {
+
+                            drawRect(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Black.copy(alpha = 0f),
+                                        Color.Black.copy(alpha = .1f),
+                                        Color.Black.copy(alpha = .2f),
+                                        Color.Black
+                                    ),
+                                    startY = 0f,
+                                    endY = topBarHeight.toFloat() + 32.dp.toPx()
+                                ),
+                                blendMode = BlendMode.DstIn
+                            )
+
+                        }
+
+                        // Apply fading edge for the bottom bar.
+                        if (bottomBar != null) {
+
+                            drawRect(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Black,
+                                        Color.Black.copy(alpha = .2f),
+                                        Color.Black.copy(alpha = .1f),
+                                        Color.Black.copy(alpha = 0f)
+                                    ),
+                                    startY = layoutHeight.toFloat() -
+                                            (bottomBarHeight.toFloat() + 32.dp.toPx()),
+                                    endY = layoutHeight.toFloat()
+                                ),
+                                blendMode = BlendMode.DstIn
+                            )
+
+                        }
+
+                    },
+                content = { content(innerPadding) }
+            )
+
         }.map { it.measure(looseConstraints) }
 
         /*
@@ -247,7 +309,7 @@ private fun FoundationLayoutImpl(
         // Defining the bottom bar placeables position offset.
         val bottomBarPlaceablesPositionOffset = IntOffset(
             x = 0,
-            y = layoutHeight - (bottomBarHeight ?: 0)
+            y = layoutHeight - bottomBarHeight
         )
 
         // Defining the side rail placeables position offset.

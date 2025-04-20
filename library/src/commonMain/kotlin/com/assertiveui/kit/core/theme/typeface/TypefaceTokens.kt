@@ -38,18 +38,18 @@ internal object DefaultTypefaceTokens : TypefaceTokens {
     override val titleMedium: TextStyle
         get() = DefaultTextStyle.copy(
             fontFamily = DefaultFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp,
-            lineHeight = 36.sp,
-            letterSpacing = 0.18.sp
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 24.sp,
+            lineHeight = 28.sp,
+            letterSpacing = 0.2.sp
         )
 
     override val titleSmall: TextStyle
         get() = DefaultTextStyle.copy(
             fontFamily = DefaultFontFamily,
             fontWeight = FontWeight.Medium,
-            fontSize = 24.sp,
-            lineHeight = 28.sp,
+            fontSize = 18.sp,
+            lineHeight = 20.sp,
             letterSpacing = 0.2.sp
         )
 
