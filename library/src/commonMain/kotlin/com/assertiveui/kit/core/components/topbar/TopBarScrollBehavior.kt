@@ -1,4 +1,5 @@
 /*
+ * Copyright 2021 The Android Open Source Project
  * Copyright 2025 Assertive UI (assertiveui.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +27,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.unit.Velocity
+import com.assertiveui.kit.core.utils.Platform
+import com.assertiveui.kit.core.utils.getPlatform
 import kotlin.math.abs
 
 /**
@@ -53,7 +56,7 @@ internal class ExitUntilCollapsedScrollBehavior(
     override val state: TopBarState,
     override val snapAnimationSpec: AnimationSpec<Float>?,
     override val flingAnimationSpec: DecayAnimationSpec<Float>?,
-    val canScroll: () -> Boolean = { true }
+    override val canScroll: () -> Boolean = { true }
 ) : TopBarScrollBehavior {
 
     override val isPinned: Boolean = false
@@ -66,7 +69,12 @@ internal class ExitUntilCollapsedScrollBehavior(
         ): Offset {
 
             // Don't intercept if scrolling down.
-            if (!canScroll() || available.y > 0f) return Offset.Zero
+            val platform = getPlatform()
+            if (platform == Platform.Android || platform == Platform.IOS) {
+                if (!canScroll() || available.y > 0f) {
+                    return Offset.Zero
+                }
+            }
 
             val prevHeightOffset = state.heightOffset
 
@@ -202,6 +210,11 @@ interface TopBarScrollBehavior {
      * drag gestures.
      */
     val isPinned: Boolean
+
+    /**
+     * Indicates whether the top bar can be scrolled.
+     */
+    val canScroll: () -> Boolean
 
     /**
      * An optional [AnimationSpec] that defines how the top bar snaps to either fully collapsed
