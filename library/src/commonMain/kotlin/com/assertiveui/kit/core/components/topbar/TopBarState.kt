@@ -1,4 +1,5 @@
 /*
+ * Copyright 2021 The Android Open Source Project
  * Copyright 2025 Assertive UI (assertiveui.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

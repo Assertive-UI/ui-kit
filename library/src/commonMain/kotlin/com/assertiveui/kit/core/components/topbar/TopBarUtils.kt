@@ -18,6 +18,7 @@ package com.assertiveui.kit.core.components.topbar
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.DecayAnimationSpec
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.WindowInsets
@@ -82,7 +83,10 @@ object TopBarUtils {
     fun exitUntilCollapsedScrollBehavior(
         state: TopBarState = rememberTopBarState(),
         canScroll: () -> Boolean = { true },
-        snapAnimationSpec: AnimationSpec<Float>? = spring(),
+        snapAnimationSpec: AnimationSpec<Float>? = spring(
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
         flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay()
     ): TopBarScrollBehavior = ExitUntilCollapsedScrollBehavior(
         state = state,
@@ -94,7 +98,7 @@ object TopBarUtils {
     /**
      * The smallest possible height of the top bar.
      */
-    val smallContainerHeight: Dp get() = 78.dp
+    val smallContainerHeight: Dp get() = 94.dp
 
     /**
      *
@@ -108,10 +112,10 @@ object TopBarUtils {
     internal fun largeContainerHeight(
         scrollBehavior: TopBarScrollBehavior? = null,
         // 1/4 of the window height by default.
-        factor: Float = 1f / 5f
+        factor: Float = 1f / 3f
     ): Dp {
 
-        val minHeight = 175.dp
+        val minHeight = 230.dp
         val configuration = LocalWindowState.current
         var maxHeight by remember { mutableStateOf<Dp?>(null) }
 

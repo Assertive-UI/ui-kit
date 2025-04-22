@@ -17,14 +17,61 @@
 package com.assertiveui.kit.core.components.topbar.action
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import com.assertiveui.kit.core.components.topbar.CollapsibleTopBar
 import com.assertiveui.kit.core.components.topbar.action.TopBarActionUtils.topBarActionContainerModifier
 import com.assertiveui.kit.core.components.topbar.action.TopBarActionUtils.topBarActionIconModifier
 
+/**
+ *
+ * A reusable, accessible top bar action component that displays an icon and responds to user interaction.
+ *
+ * Designed to be used within custom top bars such as [CollapsibleTopBar] or any composable header area
+ * that needs consistent action button behavior. This component handles layout, alignment, styling,
+ * and integrates with custom Assertive UI modifiers for hover, press, and focus states.
+ *
+ * @param icon The [Painter] used to render the icon graphic.
+ * @param onClick Callback invoked when the action is clicked.
+ * @param contentDescription A content description for accessibility and screen readers.
+ *
+ * Example usage:
+ * ```kotlin
+ * CollapsibleTopBar(
+ *     title = "Title",
+ *     scrollBehavior = scrollBehavior,
+ *     primaryActions = {
+ *
+ *         TopBarAction(
+ *             icon = painterResource(Res.drawable.arrow_left),
+ *             onClick = { /* Handle click event here. */ },
+ *             contentDescription = "Navigate Up"
+ *         )
+ *
+ *     },
+ *     secondaryActions = {
+ *
+ *         TopBarAction(
+ *             icon = painterResource(Res.drawable.search),
+ *             onClick = { /* Handle click event here. */ },
+ *             contentDescription = "Search"
+ *         )
+ *
+ *         TopBarAction(
+ *             icon = painterResource(Res.drawable.menu),
+ *             onClick = { /* Handle click event here. */ },
+ *             contentDescription = "Menu"
+ *         )
+ *
+ *     }
+ * )
+ * ```
+ *
+ */
 @Composable
 fun TopBarAction(
     icon: Painter,
@@ -33,7 +80,7 @@ fun TopBarAction(
 ) {
 
     Box(
-        modifier = Modifier.topBarActionContainerModifier { onClick() },
+        modifier = Modifier.topBarActionContainerModifier(onClick = onClick),
         contentAlignment = Alignment.Center,
         content = {
 
@@ -48,3 +95,16 @@ fun TopBarAction(
     )
 
 }
+
+/**
+ *
+ * A composable slot scope used for defining a row of top bar actions.
+ *
+ * This typealias is used to simplify the API for action parameters in components like [CollapsibleTopBar],
+ * allowing developers to pass in action content that aligns horizontally using [RowScope].
+ *
+ * Actions defined within this scope are typically aligned to the start or end of a top bar and can
+ * include components like a [TopBarAction].
+ *
+ */
+typealias TopBarActionsScope = @Composable (RowScope.() -> Unit)

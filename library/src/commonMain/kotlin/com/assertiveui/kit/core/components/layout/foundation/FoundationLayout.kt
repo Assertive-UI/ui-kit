@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
-import com.assertiveui.kit.core.components.topbar.CollapsingTopBar
+import com.assertiveui.kit.core.components.topbar.CollapsibleTopBar
 import com.assertiveui.kit.core.theme.Theme
 import com.assertiveui.kit.core.theme.color.palette.LocalContentColor
 import com.assertiveui.kit.core.utils.LocalWindowState
@@ -59,7 +59,7 @@ import com.assertiveui.kit.core.utils.LocalWindowState
  * by making an assertion based on the provided local context.
  *
  * @param modifier a [Modifier] to be applied to the scaffold
- * @param topBar a top app bar component, typically a [CollapsingTopBar]
+ * @param topBar a top app bar component, typically a [CollapsibleTopBar]
  * @param bottomBar a bottom bar component, typically a [NavigationBar]
  * @param sideRail a side rail component, typically a [NavigationRail]
  * @param snackbarHost a component to host [Snackbar]s that are pushed to be shown via

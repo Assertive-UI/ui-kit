@@ -51,5 +51,5 @@ dependencyResolutionManagement {
     }
 }
 
-include(":application")
+include(":composeApp")
 include(":library")

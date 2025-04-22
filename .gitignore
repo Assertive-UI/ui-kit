@@ -15,9 +15,9 @@
 local.properties
 
 # Project exclude paths
-/application/build/
-/application/build/classes/kotlin/desktop/main/
-/application/build/classes/kotlin/wasmJs/main/
+/composeApp/build/
+/composeApp/build/classes/kotlin/desktop/main/
+/composeApp/build/classes/kotlin/wasmJs/main/
 /library/build/
 /library/build/classes/kotlin/desktop/main/
 /library/build/classes/kotlin/wasmJs/main/
