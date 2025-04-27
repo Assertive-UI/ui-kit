@@ -699,16 +699,10 @@ private fun CollapsibleTopBarLayoutImpl(
              */
 
             // Defining the decoration placeables position offset.
-            val decorationPlaceablesOffset = IntOffset(
-                x = 0,
-                y = 0
-            )
+            val decorationPlaceablesOffset = IntOffset.Zero
 
             // Defining the background area placeables position offset.
-            val backgroundAreaPlaceablesOffset = IntOffset(
-                x = 0,
-                y = 0
-            )
+            val backgroundAreaPlaceablesOffset = IntOffset.Zero
 
             // Defining the primary actions placeables position offset.
             val primaryActionsPlaceablesOffset = IntOffset(

@@ -26,13 +26,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
@@ -59,10 +56,19 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import assertiveuikit.composeapp.generated.resources.Res
+import assertiveuikit.composeapp.generated.resources.add_outlined
+import assertiveuikit.composeapp.generated.resources.alerts_outlined
 import assertiveuikit.composeapp.generated.resources.arrow_left
+import assertiveuikit.composeapp.generated.resources.chat
+import assertiveuikit.composeapp.generated.resources.home_outlined
 import assertiveuikit.composeapp.generated.resources.menu
+import assertiveuikit.composeapp.generated.resources.open
 import assertiveuikit.composeapp.generated.resources.search
 import com.assertiveui.kit.app.core.ui.AppUIWrapper
+import com.assertiveui.kit.core.components.bottombar.navigation.BottomNavBar
+import com.assertiveui.kit.core.components.bottombar.navigation.item.BottomNavBarItem
+import com.assertiveui.kit.core.components.bottombar.navigation.action.BottomNavBarAction
+import com.assertiveui.kit.core.components.bottombar.navigation.rememberBottomNavBarState
 import com.assertiveui.kit.core.components.layout.foundation.FoundationLayout
 import com.assertiveui.kit.core.components.topbar.CollapsibleTopBar
 import com.assertiveui.kit.core.components.topbar.TopBarUtils
@@ -132,6 +138,12 @@ fun App(onApplyDarkIcons: (Boolean) -> Unit = remember { {} }) {
             canScroll = { canTopBarScroll }
         )
 
+        var selectedItemIndex by remember { mutableIntStateOf(0) }
+        val bottomNavBarState by rememberBottomNavBarState(
+            itemsCount = 5,
+            selectedItemIndex = selectedItemIndex
+        )
+
         FoundationLayout(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
@@ -169,39 +181,50 @@ fun App(onApplyDarkIcons: (Boolean) -> Unit = remember { {} }) {
             },
             bottomBar = {
 
-                Box(
-                    modifier = Modifier
-                        .padding(
-                            WindowInsets.systemBars.exclude(
-                                WindowInsets.systemBars.only(
-                                    WindowInsetsSides.Top
-                                )
-                            ).asPaddingValues()
-                        )
-                        .padding(horizontal = 40.dp)
-                        .padding(bottom = 24.dp)
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .clip(Theme.shapes.mediumShape)
-                        .background(Theme.colorPalette.surfaceElevationHigh)
-                        .border(
-                            width = 1.dp,
-                            color = Theme.colorPalette.surfaceElevationLow.copy(.2f),
-                            shape = Theme.shapes.mediumShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
+                BottomNavBar(
+                    state = bottomNavBarState,
+                    items = {
 
-                    BasicText(
-                        modifier = Modifier.padding(horizontal = 32.dp),
-                        text = "Bottom Bar",
-                        style = Theme.typefaces.titleSmall.copy(
-                            color = Theme.colorPalette.onSurfaceElevationHigh,
-                            textAlign = TextAlign.Center
+                        BottomNavBarItem(
+                            index = 0,
+                            icon = painterResource(Res.drawable.home_outlined),
+                            contentDescription = "Home",
+                            state = bottomNavBarState,
+                            onClick = { selectedItemIndex = it }
                         )
-                    )
 
-                }
+                        BottomNavBarItem(
+                            index = 1,
+                            icon = painterResource(Res.drawable.chat),
+                            contentDescription = "Chat",
+                            state = bottomNavBarState,
+                            onClick = { selectedItemIndex = it }
+                        )
+
+                        BottomNavBarAction(
+                            icon = painterResource(Res.drawable.add_outlined),
+                            contentDescription = "Add",
+                            onClick = remember { {} }
+                        )
+
+                        BottomNavBarItem(
+                            index = 3,
+                            icon = painterResource(Res.drawable.alerts_outlined),
+                            contentDescription = "Alerts",
+                            state = bottomNavBarState,
+                            onClick = { selectedItemIndex = it }
+                        )
+
+                        BottomNavBarItem(
+                            index = 4,
+                            icon = painterResource(Res.drawable.open),
+                            contentDescription = "Open",
+                            state = bottomNavBarState,
+                            onClick = { selectedItemIndex = it }
+                        )
+
+                    }
+                )
 
             },
             sideRail = {
