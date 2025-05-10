@@ -24,7 +24,7 @@ import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.assertiveui.kit.core.components.siderail.navigation.SideNavRail
 import com.assertiveui.kit.core.utils.LocalWindowState
 import com.assertiveui.kit.core.utils.ScreenOrientation
 
@@ -44,16 +45,29 @@ import com.assertiveui.kit.core.utils.ScreenOrientation
 object TopBarUtils {
 
     /**
-     * Default insets to be used and consumed by the top bars.
+     * Returns a [WindowInsets] instance for the top and horizontal safe drawing areas,
+     * with optional control over the start side inset.
+     *
+     * This is especially useful when building layouts where a [SideNavRail] is present —
+     * allowing the top bar to ignore start padding and remain properly aligned without extra spacing.
+     *
+     * @param ignoreStart If true, ignores the start (left on LTR, right on RTL) safe inset and only considers the end side.
+     * Useful when a [SideNavRail] or other permanent navigation rail is present.
+     *
+     * @return A [WindowInsets] representing the requested sides of the safe drawing area.
      */
     @Composable
-    fun windowInsets(): WindowInsets {
-        val insets by rememberUpdatedState(
-            WindowInsets.systemBars.only(
-                sides = WindowInsetsSides.Horizontal + WindowInsetsSides.Top
-            )
-        )
-        return insets
+    fun windowInsets(
+        ignoreStart: Boolean = false
+    ): WindowInsets {
+        return rememberUpdatedState(
+            WindowInsets.safeDrawing
+                .only(
+                    sides = WindowInsetsSides.Top +
+                            if (!ignoreStart) WindowInsetsSides.Horizontal
+                            else WindowInsetsSides.End
+                )
+        ).value
     }
 
     /**

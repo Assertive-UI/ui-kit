@@ -27,6 +27,8 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.verticalScroll
@@ -88,7 +90,7 @@ fun FoundationLayout(
     snackbarHost: @Composable @UiComposable () -> Unit = {},
     containerColor: Color = Theme.colorPalette.surfaceElevationLow,
     contentColor: Color = Theme.colorPalette.onSurfaceElevationLow,
-    contentWindowInsets: WindowInsets = WindowInsets.systemBars,
+    contentWindowInsets: WindowInsets = WindowInsets.safeDrawing,
     content: @Composable @UiComposable (PaddingValues) -> Unit
 ) = BoxWithConstraints(
     modifier = Modifier

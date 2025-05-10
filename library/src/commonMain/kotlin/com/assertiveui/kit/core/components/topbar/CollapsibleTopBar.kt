@@ -37,12 +37,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
@@ -61,6 +63,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.lerp
 import androidx.compose.ui.text.style.TextAlign
@@ -211,7 +214,13 @@ val DefaultCollapsibleTopBarDecoration: CollapsibleTopBarDecorationScope = { pro
                     .div(2)
                     .coerceAtLeast(0f)
             }
-            .statusBarsPadding()
+            .windowInsetsPadding(
+                WindowInsets.safeDrawing
+                    .only(
+                        WindowInsetsSides.Top +
+                                WindowInsetsSides.Horizontal
+                    )
+            )
             .padding(end = 48.dp, top = 32.dp)
             .size(32.dp)
             .align(Alignment.TopEnd)
@@ -225,7 +234,13 @@ val DefaultCollapsibleTopBarDecoration: CollapsibleTopBarDecorationScope = { pro
     Box(
         modifier = Modifier
             .graphicsLayer { this.alpha = alpha }
-            .statusBarsPadding()
+            .windowInsetsPadding(
+                WindowInsets.safeDrawing
+                    .only(
+                        WindowInsetsSides.Top +
+                                WindowInsetsSides.Horizontal
+                    )
+            )
             .padding(end = 32.dp, top = 48.dp)
             .size(32.dp)
             .align(Alignment.TopEnd)
@@ -387,6 +402,21 @@ private fun CollapsibleTopBarLayoutImpl(
         }
     }
 
+    val layoutDirection = LocalLayoutDirection.current
+    val insetsPadding by rememberUpdatedState(windowInsets.asPaddingValues())
+
+    val safeStartPadding by remember(insetsPadding, layoutDirection) {
+        derivedStateOf {
+            insetsPadding.calculateStartPadding(layoutDirection)
+        }
+    }
+
+    val safeEndPadding by remember(insetsPadding, layoutDirection) {
+        derivedStateOf {
+            insetsPadding.calculateEndPadding(layoutDirection)
+        }
+    }
+
     SubcomposeLayout(
         modifier = Modifier
             .height(height)
@@ -432,13 +462,24 @@ private fun CollapsibleTopBarLayoutImpl(
                 slotId = CollapsibleTopBarPlaceables.BackgroundArea,
                 content = {
 
-                    val horizontalPadding by animateDpAsState(
+                    val startPadding by animateDpAsState(
                         targetValue = transformFraction(
                             value = collapsedFraction(),
                             startX = 0f,
                             endX = 1f,
-                            startY = 16.dp.value,
-                            endY = 24.dp.value
+                            startY = (16.dp + safeStartPadding).value,
+                            endY = (24.dp + safeStartPadding).value
+                        ).dp,
+                        animationSpec = snap()
+                    )
+
+                    val endPadding by animateDpAsState(
+                        targetValue = transformFraction(
+                            value = collapsedFraction(),
+                            startX = 0f,
+                            endX = 1f,
+                            startY = (16.dp + safeEndPadding).value,
+                            endY = (24.dp + safeEndPadding).value
                         ).dp,
                         animationSpec = snap()
                     )
@@ -491,12 +532,13 @@ private fun CollapsibleTopBarLayoutImpl(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(
-                                top = windowInsets
-                                    .asPaddingValues()
-                                    .calculateTopPadding() + 16.dp,
+                                top = insetsPadding.calculateTopPadding() + 16.dp,
                                 bottom = 16.dp
                             )
-                            .padding(horizontal = horizontalPadding)
+                            .padding(
+                                start = startPadding,
+                                end = endPadding
+                            )
                             .fillMaxSize()
                             .clip(shape)
                             .background(bgColor)
@@ -522,8 +564,8 @@ private fun CollapsibleTopBarLayoutImpl(
                                 value = collapsedFraction(),
                                 startX = 0f,
                                 endX = 1f,
-                                startY = 24.dp.value,
-                                endY = 32.dp.value
+                                startY = (24.dp + safeStartPadding).value,
+                                endY = (32.dp + safeStartPadding).value
                             ).dp,
                             animationSpec = snap()
                         )
@@ -555,13 +597,13 @@ private fun CollapsibleTopBarLayoutImpl(
 
                     if (secondaryActions != null) {
 
-                        val startPadding by animateDpAsState(
+                        val endPadding by animateDpAsState(
                             targetValue = transformFraction(
                                 value = collapsedFraction(),
                                 startX = 0f,
                                 endX = 1f,
-                                startY = 24.dp.value,
-                                endY = 32.dp.value
+                                startY = (24.dp + safeEndPadding).value,
+                                endY = (32.dp + safeEndPadding).value
                             ).dp,
                             animationSpec = snap()
                         )
@@ -569,7 +611,7 @@ private fun CollapsibleTopBarLayoutImpl(
                         Row(
                             modifier = Modifier
                                 .height(pinnedHeight)
-                                .padding(end = startPadding),
+                                .padding(end = endPadding),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(2.dp),
                             content = secondaryActions

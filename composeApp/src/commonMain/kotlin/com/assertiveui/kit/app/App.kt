@@ -25,13 +25,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,11 +46,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import assertiveuikit.composeapp.generated.resources.Res
 import assertiveuikit.composeapp.generated.resources.add_outlined
@@ -66,10 +61,13 @@ import assertiveuikit.composeapp.generated.resources.open
 import assertiveuikit.composeapp.generated.resources.search
 import com.assertiveui.kit.app.core.ui.AppUIWrapper
 import com.assertiveui.kit.core.components.bottombar.navigation.BottomNavBar
-import com.assertiveui.kit.core.components.bottombar.navigation.item.BottomNavBarItem
 import com.assertiveui.kit.core.components.bottombar.navigation.action.BottomNavBarAction
+import com.assertiveui.kit.core.components.bottombar.navigation.item.BottomNavBarItem
 import com.assertiveui.kit.core.components.bottombar.navigation.rememberBottomNavBarState
 import com.assertiveui.kit.core.components.layout.foundation.FoundationLayout
+import com.assertiveui.kit.core.components.siderail.navigation.SideNavRail
+import com.assertiveui.kit.core.components.siderail.navigation.item.SideNavRailItem
+import com.assertiveui.kit.core.components.siderail.navigation.rememberSideNavRailState
 import com.assertiveui.kit.core.components.topbar.CollapsibleTopBar
 import com.assertiveui.kit.core.components.topbar.TopBarUtils
 import com.assertiveui.kit.core.components.topbar.action.TopBarAction
@@ -138,9 +136,16 @@ fun App(onApplyDarkIcons: (Boolean) -> Unit = remember { {} }) {
             canScroll = { canTopBarScroll }
         )
 
+        val navItemsCount = remember { 5 }
         var selectedItemIndex by remember { mutableIntStateOf(0) }
+
         val bottomNavBarState by rememberBottomNavBarState(
-            itemsCount = 5,
+            itemsCount = navItemsCount,
+            selectedItemIndex = selectedItemIndex
+        )
+
+        val sideNavRailState by rememberSideNavRailState(
+            itemsCount = navItemsCount,
             selectedItemIndex = selectedItemIndex
         )
 
@@ -175,7 +180,8 @@ fun App(onApplyDarkIcons: (Boolean) -> Unit = remember { {} }) {
                             contentDescription = "Menu"
                         )
 
-                    }
+                    },
+                    windowInsets = TopBarUtils.windowInsets(ignoreStart = true)
                 )
 
             },
@@ -229,27 +235,50 @@ fun App(onApplyDarkIcons: (Boolean) -> Unit = remember { {} }) {
             },
             sideRail = {
 
-                Box(
-                    modifier = Modifier
-                        .padding(WindowInsets.systemBars.asPaddingValues())
-                        .padding(vertical = 64.dp)
-                        .padding(horizontal = 24.dp)
-                        .width(64.dp)
-                        .clip(Theme.shapes.mediumShape)
-                        .background(Theme.colorPalette.surfaceElevationHigh),
-                    contentAlignment = Alignment.Center
-                ) {
+                SideNavRail(
+                    state = sideNavRailState,
+                    items = {
 
-                    BasicText(
-                        modifier = Modifier.padding(vertical = 32.dp),
-                        text = "S\ni\nd\ne\n\nR\na\ni\nl",
-                        style = Theme.typefaces.titleSmall.copy(
-                            color = Theme.colorPalette.onSurfaceElevationHigh,
-                            textAlign = TextAlign.Center
+                        SideNavRailItem(
+                            index = 0,
+                            state = sideNavRailState,
+                            icon = painterResource(Res.drawable.home_outlined),
+                            contentDescription = "Home",
+                            onClick = { selectedItemIndex = it }
                         )
-                    )
 
-                }
+                        SideNavRailItem(
+                            index = 1,
+                            state = sideNavRailState,
+                            icon = painterResource(Res.drawable.chat),
+                            contentDescription = "Chat",
+                            onClick = { selectedItemIndex = it }
+                        )
+
+                        BottomNavBarAction(
+                            icon = painterResource(Res.drawable.add_outlined),
+                            contentDescription = "Add",
+                            onClick = remember { {} }
+                        )
+
+                        SideNavRailItem(
+                            index = 3,
+                            state = sideNavRailState,
+                            icon = painterResource(Res.drawable.alerts_outlined),
+                            contentDescription = "Alerts",
+                            onClick = { selectedItemIndex = it }
+                        )
+
+                        SideNavRailItem(
+                            index = 4,
+                            state = sideNavRailState,
+                            icon = painterResource(Res.drawable.open),
+                            contentDescription = "Open",
+                            onClick = { selectedItemIndex = it }
+                        )
+
+                    }
+                )
 
             }
         ) { safePadding ->
