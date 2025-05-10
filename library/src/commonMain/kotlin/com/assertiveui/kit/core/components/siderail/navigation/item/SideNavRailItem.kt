@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package com.assertiveui.kit.core.components.bottombar.navigation.item
+package com.assertiveui.kit.core.components.siderail.navigation.item
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
-import com.assertiveui.kit.core.components.bottombar.navigation.BottomNavBarState
-import com.assertiveui.kit.core.components.bottombar.navigation.item.BottomNavBarItemUtils.bottomNavBarItemContainerModifier
-import com.assertiveui.kit.core.components.bottombar.navigation.item.BottomNavBarItemUtils.bottomNavBarItemIconModifier
-import com.assertiveui.kit.core.components.siderail.navigation.item.SideNavRailItemUtils
+import com.assertiveui.kit.core.components.bottombar.navigation.item.BottomNavBarItemUtils
+import com.assertiveui.kit.core.components.siderail.navigation.SideNavRailState
+import com.assertiveui.kit.core.components.siderail.navigation.item.SideNavRailItemUtils.sideNavRailItemContainerModifier
+import com.assertiveui.kit.core.components.siderail.navigation.item.SideNavRailItemUtils.sideNavRailItemIconModifier
 
 /**
- * Represents an individual item within a bottom navigation bar.
+ * Represents an individual item within a side navigation rail.
  *
  * This composable handles user interactions like hover, focus, and press states,
  * applies animations to the icon, and updates its appearance based on whether it
@@ -41,15 +41,15 @@ import com.assertiveui.kit.core.components.siderail.navigation.item.SideNavRailI
  * @param index The index of this item in the bottom navigation bar.
  * @param icon The [Painter] resource to be drawn as the icon.
  * @param contentDescription A description of the icon for accessibility purposes.
- * @param state The current [BottomNavBarState] containing the selected item information.
+ * @param state The current [SideNavRailState] containing the selected item information.
  * @param onClick Callback triggered when this item is clicked, providing the clicked index.
  */
 @Composable
-fun BottomNavBarItem(
+fun SideNavRailItem(
     index: Int,
     icon: Painter,
     contentDescription: String?,
-    state: BottomNavBarState,
+    state: SideNavRailState,
     onClick: (clickedIndex: Int) -> Unit
 ) {
 
@@ -57,7 +57,7 @@ fun BottomNavBarItem(
 
     Box(
         modifier = Modifier
-            .bottomNavBarItemContainerModifier(
+            .sideNavRailItemContainerModifier(
                 index = index,
                 interactionSource = interactionSource,
                 onClick = onClick
@@ -67,14 +67,14 @@ fun BottomNavBarItem(
 
             Icon(
                 modifier = Modifier
-                    .bottomNavBarItemIconModifier(
+                    .sideNavRailItemIconModifier(
                         index = index,
                         state = state,
                         interactionSource = interactionSource
                     ),
                 painter = icon,
                 contentDescription = contentDescription,
-                tint = SideNavRailItemUtils.iconColor(
+                tint = BottomNavBarItemUtils.iconColor(
                     selectedItemIndex = state.selectedItemIndex,
                     index = index
                 )
@@ -86,9 +86,9 @@ fun BottomNavBarItem(
 }
 
 /**
- * Defines a scope for creating multiple Bottom Navigation Bar items
- * inside a layout like a [Row].
+ * Defines a scope for creating multiple Side Navigation Rail items
+ * inside a layout like a [Column].
  *
- * You can use this to easily build a list of bottom navigation items in a structured way.
+ * You can use this to easily build a list of side navigation items in a structured way.
  */
-typealias BottomNavBarItemScope = @Composable RowScope.() -> Unit
+typealias SideNavRailItemScope = @Composable ColumnScope.() -> Unit
